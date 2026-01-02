@@ -29,9 +29,6 @@ else:
 
 st.write("API Key 已加载:", bool(api_key))
 
-
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
 # Check if the API Key is loaded successfully
 if not GEMINI_API_KEY:
     st.error(f"Error: GEMINI_API_KEY not found. Attempted path: {env_path}")
