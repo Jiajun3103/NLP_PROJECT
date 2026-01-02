@@ -16,10 +16,12 @@ ps = PorterStemmer()
 
 # --- Gemini API Configuration ---
 # Load environment variables
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-
-genai.configure(api_key=GEMINI_API_KEY)
-
+if "GEMINI_API_KEY" in st.secrets:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+else:
+    from dotenv import load_dotenv
+    load_dotenv()
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Check if the API Key is loaded successfully
 if not GEMINI_API_KEY:
@@ -27,7 +29,7 @@ if not GEMINI_API_KEY:
 else:
     genai.configure(api_key=GEMINI_API_KEY)
     # Using stable model version
-    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash-lite')
 
 # --- Core Function: NLP Text Cleaning ---
 def clean_text(text):
@@ -51,45 +53,48 @@ except:
     st.error("Error: Model files not found. Please check the 'TF-IDF and SVM' folder.")
 
 # --- Step 2: Integrated Gemini Chatbot (Sidebar) ---
-# Requirement: A chatbot that allows users to ask questions about the project [cite: 38]
+# Requirement: A chatbot that allows users to ask questions about the project 
 st.sidebar.title("🤖 Movie Genre Classification Assistant ")
 st.sidebar.write("I can answer questions about this portal and guide you through its features.")
 
-# Initialize chat history
+# 1. Initialize session state for messages
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
-for message in st.session_state.messages:
-    with st.sidebar.chat_message(message["role"]):
-        st.markdown(message["content"])
+# 2. Create a scrollable container for the chat history
+# This keeps the history separated from the input bar
+chat_history_container = st.sidebar.container()
 
-# Chat input box
-if chat_input := st.sidebar.chat_input("Type your question (e.g., How to use this?)"):
-    # 1. Save and display user input
+# 3. Display history inside that container
+with chat_history_container:
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+# 4. Chat input box - This widget will naturally stay at the bottom of the sidebar
+if chat_input := st.sidebar.chat_input("Type your question..."):
+    # Append User Message
     st.session_state.messages.append({"role": "user", "content": chat_input})
-    with st.sidebar.chat_message("user"):
+    with chat_history_container.chat_message("user"):
         st.markdown(chat_input)
 
-    # 2. Call Gemini (with System Prompt constraints)
-    with st.sidebar.chat_message("assistant"):
-        # System Context defines the bot's behavior and knowledge [cite: 39]
+    # Generate Response
+    with chat_history_container.chat_message("assistant"):
         system_context = (
-            "You are a helpful assistant for the 'Movie Classifier AI' portal developed by the BAXI 3413 group. "
-            "Project info: Techniques used include TF-IDF and SVM. Model accuracy is 40% due to multi-label complexity. "
-            "The dataset is sourced from Kaggle. "
-            "If asked how to use the site, guide the user to the text area on the main page to paste a movie description. "
-            "Be professional and always try to guide the user to the portal's core features."
+            "You are a helpful assistant for the 'Movie Classifier AI' portal. "
+            "Techniques: TF-IDF and SVM. "
+            "Guide users to the main page text area for predictions. "
         )
         
+        # Call Gemini model
         response = gemini_model.generate_content(f"{system_context}\nUser question: {chat_input}")
         bot_response = response.text
         st.markdown(bot_response)
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
 
-    # 3. Dynamic User Guidance [cite: 40]
-    if any(keyword in chat_input.lower() for keyword in ["use", "how", "predict", "predict"]):
-        st.sidebar.warning("💡 **Quick Guide:** Paste the plot summary in the main text box and click 'Predict Genre'.")
+    # Requirement: Dynamic User Guidance
+    if any(keyword in chat_input.lower() for keyword in ["use", "how", "predict"]):
+        st.sidebar.warning("💡 **Quick Guide:** Paste the movie description in the main text box and click 'Predict Genre'.")
 
 # --- Step 3: Main Website Portal Interface ---
 st.title("🎬 Movie Genre Classification Portal")
