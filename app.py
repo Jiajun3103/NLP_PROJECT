@@ -15,9 +15,6 @@ stop_words = set(stopwords.words('english'))
 ps = PorterStemmer()
 
 # --- Gemini API Configuration ---
-# Get the absolute path of the current script to locate the .env file
-base_path = Path(__file__).resolve().parent
-env_path = base_path / '.env'
 
 # Load environment variables
 if "GEMINI_API_KEY" in st.secrets:
