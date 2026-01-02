@@ -3,7 +3,7 @@ import joblib
 import re
 import nltk
 import os
-import google.generativeai as genai  
+import google.generativeai as genai
 from dotenv import load_dotenv
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
