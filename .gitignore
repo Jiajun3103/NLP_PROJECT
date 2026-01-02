@@ -1,0 +1,19 @@
+# Sensitive Information
+.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Large Data Files (Optional)
+# If your .csv is very large, GitHub might reject it.
+# TF-IDF and SVM/movies_info.csv
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
