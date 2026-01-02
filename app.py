@@ -23,11 +23,13 @@ env_path = base_path / '.env'
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
+    # 本地开发时才加载 .env
     from dotenv import load_dotenv
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY")
 
 st.write("API Key 已加载:", bool(api_key))
+GEMINI_API_KEY = api_key
 
 # Check if the API Key is loaded successfully
 if not GEMINI_API_KEY:
