@@ -30,7 +30,7 @@ GEMINI_API_KEY = api_key
 
 # Check if the API Key is loaded successfully
 if not GEMINI_API_KEY:
-    st.error(f"Error: GEMINI_API_KEY not found. Attempted path: {env_path}")
+    st.error("Error: GEMINI_API_KEY not found.")
 else:
     genai.configure(api_key=GEMINI_API_KEY)
     # Using stable model version
