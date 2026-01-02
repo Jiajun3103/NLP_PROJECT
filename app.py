@@ -27,7 +27,7 @@ if not GEMINI_API_KEY:
 else:
     genai.configure(api_key=GEMINI_API_KEY)
     # Using stable model version
-    gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 
 # --- Core Function: NLP Text Cleaning ---
 def clean_text(text):
