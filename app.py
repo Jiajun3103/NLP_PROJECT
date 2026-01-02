@@ -15,18 +15,11 @@ stop_words = set(stopwords.words('english'))
 ps = PorterStemmer()
 
 # --- Gemini API Configuration ---
-
 # Load environment variables
-if "GEMINI_API_KEY" in st.secrets:
-    api_key = st.secrets["GEMINI_API_KEY"]
-else:
-    # 本地开发时才加载 .env
-    from dotenv import load_dotenv
-    load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-st.write("API Key 已加载:", bool(api_key))
-GEMINI_API_KEY = api_key
+genai.configure(api_key=GEMINI_API_KEY)
+
 
 # Check if the API Key is loaded successfully
 if not GEMINI_API_KEY:
