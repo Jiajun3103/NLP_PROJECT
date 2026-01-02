@@ -20,7 +20,15 @@ base_path = Path(__file__).resolve().parent
 env_path = base_path / '.env'
 
 # Load environment variables
-load_dotenv(dotenv_path=env_path, override=True)
+if "GEMINI_API_KEY" in st.secrets:
+    api_key = st.secrets["GEMINI_API_KEY"]
+else:
+    from dotenv import load_dotenv
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
+
+st.write("API Key 已加载:", bool(api_key))
+
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
