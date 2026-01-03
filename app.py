@@ -9,7 +9,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from pathlib import Path
 
-# --- Page Configuration (Must be the first Streamlit command) ---
+# --- Page Configuration ---
 st.set_page_config(
     page_title="Cinematch AI | Genre Predictor",
     page_icon="🎬",
