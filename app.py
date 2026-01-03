@@ -55,7 +55,7 @@ if not GEMINI_API_KEY:
     st.error("🔑 API Key Missing: Please configure GEMINI_API_KEY in your secrets.")
 else:
     genai.configure(api_key=GEMINI_API_KEY)
-    gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 
 # --- Core Function: NLP Text Cleaning ---
 def clean_text(text):
