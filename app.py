@@ -101,14 +101,32 @@ with st.sidebar:
             st.markdown(chat_input)
 
         with chat_history_container.chat_message("assistant"):
-            system_context = "You are a professional assistant for Cinematch AI. Techniques: TF-IDF and SVM. Guide users to input plots for genre prediction."
+            system_context = (
+                "You are the professional assistant for Cinematch AI, developed by group DEY. "
+                "Knowledge Base: "
+                "1. Usage: Paste a plot summary in the main text area and click 'Analyze'. "
+                "2. Tech Stack: TF-IDF for features, Linear SVM for classification, NLTK for NLP. "
+                "3. Accuracy: 40% (due to high complexity of movie genres). "
+                "4. Data: Kaggle Movies Dataset. "
+                "5. Commercial: Potential as an API for streaming services. "
+                "Guidance Instructions: "
+                "- If the user asks 'how to use', 'get started', or 'predict', tell them the steps and explicitly say: 'Look at the center of the main page.' "
+                "- If the user asks about 'tech', 'SVM', 'TF-IDF', or 'libraries', explain briefly and say: 'You can find more details in the Technical Stack tab below.' "
+                "- If the user asks about 'goals' or 'purpose', say: 'Check out the Objectives tab at the bottom.' "
+                "- If the user asks about 'business' or 'real world', say: 'Visit the Commercial Potential tab.' "
+                "Be polite, professional, and always conclude with a helpful suggestion.")      
             response = gemini_model.generate_content(f"{system_context}\nUser question: {chat_input}")
             bot_response = response.text
             st.markdown(bot_response)
             st.session_state.messages.append({"role": "assistant", "content": bot_response})
 
-    if any(keyword in (chat_input or "").lower() for keyword in ["use", "how", "help"]):
-        st.info("💡 **Tip:** Paste a movie plot in the main area and hit 'Analyze'!")
+    low_input = chat_input.lower() if chat_input is not None else ""
+    if any(k in low_input for k in ["tech", "svm", "tfidf", "library", "algorithm"]):
+            st.info("📂 **Navigation Hint:** Detailed technical specs are under the 'Technical Stack' tab.")
+    elif any(k in low_input for k in ["how", "use", "start", "predict"]):
+            st.warning("🎯 **Ready?** Paste your text in the box on the right and hit Analyze!")
+    elif any(k in low_input for k in ["goal", "object", "why"]):
+            st.info("💡 **Navigation Hint:** See our goals in the 'Objectives' tab below.")
 
 # --- Step 3: Main Website Portal Interface ---
 st.title("🎬 Cinematch AI")
